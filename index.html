@@ -64,7 +64,7 @@
       margin-bottom: 20px;
       color: #1e293b;
       display: flex;
-      justify-content: center;
+      justify(content): center;
       align-items: center;
       gap: 10px;
     }
@@ -147,7 +147,7 @@
 
 <body>
 
-  <img src="https://ibb.co/Xk2rZy6S" class="logo">
+  <img src="https://i.ibb.co/Xk2rZy6S/1774785884501.png" class="logo" onerror="this.src='https://i.ibb.co/8nH5RSsc/Listo.png'; this.onerror=null;" alt="Listo Logo">
 
   <div class="container">
     <div class="card">
@@ -167,7 +167,7 @@
 
   <script>
     // ==========================================
-    // 1. FIREBASE CONFIGURATION
+    // 1. FIREBASE CONFIGURATION (Must match android app)
     // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
@@ -211,7 +211,7 @@
     // 3. LOGIC: LIVE SYNC OR OFFLINE FALLBACK
     // ==========================================
     if (uid) {
-      // --- MODE 1: LIVE CLOUD SYNC ---
+      // --- MODE 1: LIVE CLOUD SYNC (Requires new QR code from app) ---
       titleDiv.innerHTML = `Shared List <span class="live-badge">Live</span>`;
 
       // onSnapshot listens to database changes in REAL-TIME
@@ -245,12 +245,12 @@
           listDiv.innerHTML = `<div class="loading-text">No list found for this user.</div>`;
         }
       }, (error) => {
-        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list.</div>`;
+        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list. Make sure uid is correct.</div>`;
         console.error("Error fetching live data:", error);
       });
 
     } else if (dataParam) {
-      // --- MODE 2: OFFLINE QR CODE (Old version support) ---
+      // --- MODE 2: OFFLINE QR CODE (Old version fallback) ---
       titleDiv.innerHTML = `Shared List`;
       listDiv.innerHTML = ""; // Clear loading text
       
@@ -258,7 +258,7 @@
       let count = 1;
       items.forEach(it => {
         if (it.trim() !== "") {
-          // Removes numbering if it already exists, to avoid double numbers
+          // Removes numbering if it already exists in text, to avoid double numbers
           let cleanText = it.replace(/^\d+\.\s*/, ''); 
           let itemEl = createItemElement(`${count}. ${cleanText}`, false, false, false);
           listDiv.appendChild(itemEl);
