@@ -13,7 +13,6 @@
     body {
       margin: 0;
       font-family: system-ui;
-      /* ICE-GRAY LIVE GRADIENT BACKGROUND */
       background: linear-gradient(-45deg, #f8fafc, #edf2f7, #e2e8f0, #e0f2fe);
       background-size: 400% 400%;
       animation: liveBg 8s ease-in-out infinite;
@@ -31,13 +30,11 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* ==========================================
-       LOGO FIX: Ensure image is NOT cut off
-       ========================================== */
+    /* LOGO FIX: Scaled perfectly without cutting */
     .logo {
-      width: 100px; /* Increased slightly for better look */
-      height: auto; /* Proportional scaling prevents cutting */
-      object-fit: contain; /* ensures the whole image is visible within the container */
+      width: 100px;
+      height: auto;
+      object-fit: contain;
       margin-top: 10px;
       margin-bottom: 15px;
       filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
@@ -74,7 +71,6 @@
       gap: 10px;
     }
 
-    /* LIVE PULSE BADGE */
     .live-badge {
       background-color: #ef4444;
       color: white;
@@ -153,7 +149,7 @@
 
 <body>
 
-  <img src="https://image2url.com/r2/default/images/1774860458918-c6f7a05c-ca26-46e6-96fc-a7648f576bb0.png" class="logo" alt="Listo Logo">
+  <img src="https://image2url.com/r2/default/images/1774860458918-c6f7a05c-ca26-46e6-96fc-a7648f576bb0.png" class="logo" onerror="this.src='https://i.ibb.co/8nH5RSsc/Listo.png'; this.onerror=null;" alt="Listo Logo">
 
   <div class="container">
     <div class="card">
@@ -167,13 +163,13 @@
     </div>
 
     <div class="tagline">
-      "Listo apnaiye: List banegi digital, shopping hogi simple!"
+      Listo apnaiye: List banegi digital, shopping hogi simple!
     </div>
   </div>
 
   <script>
     // ==========================================
-    // 1. FIREBASE CONFIGURATION (Must match android app)
+    // 1. FIREBASE CONFIGURATION 
     // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
@@ -192,20 +188,18 @@
     // 2. PARSE URL PARAMETERS
     // ==========================================
     let params = new URLSearchParams(location.search);
-    let uid = params.get("uid"); // Secret ID from App
-    let dataParam = params.get("data"); // Static text fallback
+    let uid = params.get("uid");
+    let dataParam = params.get("data");
     let listDiv = document.getElementById("list");
     let titleDiv = document.getElementById("mainTitle");
 
-    // Helper function to create an item UI
     function createItemElement(text, isChecked, isCrossed, isNA) {
       let div = document.createElement("div");
       div.className = "item";
       
       let textStyle = "";
-      // Smart text color logic to match app experience
       if (isCrossed) textStyle += "text-decoration: line-through; color: #94a3b8;";
-      if (isNA) textStyle += "color: #ef4444;"; // Red text for N/A
+      if (isNA) textStyle += "color: #ef4444;";
 
       div.innerHTML = `
         <input type="checkbox" ${isChecked ? "checked" : ""} onclick="return false;">
@@ -218,12 +212,10 @@
     // 3. LOGIC: LIVE SYNC OR OFFLINE FALLBACK
     // ==========================================
     if (uid) {
-      // --- MODE 1: LIVE CLOUD SYNC (requires modern QR from app) ---
       titleDiv.innerHTML = `Shared List <span class="live-badge">Live</span>`;
 
-      // onSnapshot listens to database changes in REAL-TIME
       db.collection("users").doc(uid).onSnapshot((doc) => {
-        listDiv.innerHTML = ""; // Clear list before redrawing
+        listDiv.innerHTML = "";
 
         if (doc.exists) {
           let items = doc.data().items || [];
@@ -233,7 +225,6 @@
             return;
           }
 
-          // Sort so pending comes first, then done, then N/A
           let pendingItems = items.filter(it => it.status === "pending");
           let doneItems = items.filter(it => it.status === "done");
           let naItems = items.filter(it => it.status === "na");
@@ -252,20 +243,18 @@
           listDiv.innerHTML = `<div class="loading-text">No list found for this ID.</div>`;
         }
       }, (error) => {
-        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list.</div>`;
+        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list. Make sure uid is correct.</div>`;
         console.error("Error fetching live data:", error);
       });
 
     } else if (dataParam) {
-      // --- MODE 2: OFFLINE QR CODE (fallback for old codes) ---
       titleDiv.innerHTML = `Shared List`;
-      listDiv.innerHTML = ""; // Clear loading text
+      listDiv.innerHTML = ""; 
       
       let items = decodeURIComponent(dataParam).split("\n");
       let count = 1;
       items.forEach(it => {
         if (it.trim() !== "") {
-          // Removes numbering if it already exists in text, to avoid double numbers
           let cleanText = it.replace(/^\d+\.\s*/, ''); 
           let itemEl = createItemElement(`${count}. ${cleanText}`, false, false, false);
           listDiv.appendChild(itemEl);
@@ -273,7 +262,6 @@
         }
       });
     } else {
-      // --- NO DATA AT ALL ---
       listDiv.innerHTML = `<div class="loading-text">Please scan a valid Listo QR Code.</div>`;
     }
   </script>
