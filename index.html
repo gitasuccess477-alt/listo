@@ -2,173 +2,274 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no">
+  <title>Listo - Shared List</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1,
-maximum-scale=1,user-scalable=no">
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
-<title>Item List</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui;
+      background: linear-gradient(-45deg, #f8fafc, #edf2f7, #e2e8f0, #e0f2fe);
+      background-size: 400% 400%;
+      animation: liveBg 8s ease-in-out infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
 
-<style>
+    @keyframes liveBg {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-body{
-margin:0;
-font-family:system-ui;
-background:#ffffff;
+    /* LOGO */
+    .logo {
+      width: 90px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
 
-display:flex;
-flex-direction:column;
-align-items:center;
+    /* CONTAINER */
+    .container {
+      width: 100%;
+      max-width: 420px;
+      margin-bottom: 60px;
+    }
 
-padding:20px;
-box-sizing:border-box;
-}
+    /* 3D CARD */
+    .card {
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-sizing: border-box;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      border: 1px solid #f1f5f9;
+    }
 
-/* LOGO */
+    /* TITLE */
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
 
-.logo{
-width:85px;
-margin-top:10px;
-margin-bottom:10px;
-}
+    .live-badge {
+      background-color: #ef4444;
+      color: white;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      animation: pulse 1.5s infinite;
+      text-transform: uppercase;
+    }
 
-/* CONTAINER */
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
 
-.container{
-width:100%;
-max-width:400px;
-}
+    /* ITEMS */
+    .item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 10px;
+      font-size: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      transition: background 0.3s;
+      border-radius: 8px;
+    }
 
-/* 3D CARD */
+    .item:last-child {
+      border-bottom: none;
+    }
 
-.card{
+    .item:hover {
+      background: #f8fafc;
+    }
 
-width:100%;
+    /* CHECKBOX */
+    .item input {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: #22c55e;
+    }
 
-background:white;
+    .item-text {
+      flex: 1;
+      word-break: break-word;
+      color: #334155;
+      font-weight: 500;
+    }
 
-border-radius:20px;
+    /* TAGLINE */
+    .tagline {
+      position: fixed;
+      bottom: 15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-style: italic;
+      color: #16a34a;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
 
-padding:22px;
-
-box-sizing:border-box;
-
-/* 3D SHADOW */
-
-box-shadow:
-0 8px 18px rgba(0,0,0,0.15),
-0 2px 6px rgba(0,0,0,0.1);
-
-border:1px solid #eee;
-
-}
-
-/* TITLE */
-
-.title{
-text-align:center;
-font-size:20px;
-font-weight:bold;
-margin-bottom:15px;
-}
-
-/* ITEMS */
-
-.item{
-display:flex;
-align-items:center;
-gap:10px;
-
-padding:8px 0;
-
-font-size:16px;
-
-border-bottom:1px solid #f1f1f1;
-}
-
-.item:last-child{
-border-bottom:none;
-}
-
-/* CHECKBOX */
-
-.item input{
-width:18px;
-height:18px;
-}
-
-/* TAGLINE */
-
-.tagline{
-margin-top:15px;
-text-align:center;
-
-font-style:italic;
-color:#16a34a;
-font-size:14px;
-}
-</style>
-
+    .loading-text {
+      text-align: center;
+      color: #64748b;
+      font-style: italic;
+      padding: 20px 0;
+    }
+  </style>
 </head>
 
 <body>
 
-<img src="https://i.ibb.co/8nH5RSsc/Listo.png" class="logo">
+  <img src="https://i.ibb.co/8nH5RSsc/Listo.png" class="logo">
 
-<div class="container">
+  <div class="container">
+    <div class="card">
+      <div class="title" id="mainTitle">
+        Shared List
+      </div>
+      
+      <div id="list">
+        <div class="loading-text">Loading items...</div>
+      </div>
+    </div>
 
-<div class="card">
+    <div class="tagline">
+      Paper ki list chhodo, digital bano – smart shopping karo aur environment bachao.
+    </div>
+  </div>
 
-<div class="title">
-𝐈𝐭𝐞𝐦 𝐋𝐢𝐬𝐭
-</div>
+  <script>
+    // ==========================================
+    // 1. FIREBASE CONFIGURATION
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
+      authDomain: "listo-356ba.firebaseapp.com",
+      projectId: "listo-356ba",
+      storageBucket: "listo-356ba.firebasestorage.app",
+      messagingSenderId: "104729909475",
+      appId: "1:104729909475:web:fb3bd44800d371b7748dd6"
+    };
 
-<div id="list"></div>
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-</div>
+    // ==========================================
+    // 2. PARSE URL PARAMETERS
+    // ==========================================
+    let params = new URLSearchParams(location.search);
+    let uid = params.get("uid");
+    let dataParam = params.get("data");
+    let listDiv = document.getElementById("list");
+    let titleDiv = document.getElementById("mainTitle");
 
-<div class="tagline">
-𝗣𝗮𝗽𝗲𝗿 𝗸𝗶 𝗹𝗶𝘀𝘁 𝗰𝗵𝗵𝗼𝗱𝗼, 𝗱𝗶𝗴𝗶𝘁𝗮𝗹 𝗯𝗮𝗻𝗼 – 𝘀𝗺𝗮𝗿𝘁 𝘀𝗵𝗼𝗽𝗽𝗶𝗻𝗴 𝗸𝗮𝗿𝗼 𝗮𝘂𝗿 𝗲𝗻𝘃𝗶𝗿𝗼𝗻𝗺𝗲𝗻𝘁 𝗯𝗮𝗰𝗵𝗮𝗼.
-</div>
+    // Helper function to create an item UI
+    function createItemElement(text, isChecked, isCrossed, isNA) {
+      let div = document.createElement("div");
+      div.className = "item";
+      
+      let textStyle = "";
+      if (isCrossed) textStyle += "text-decoration: line-through; color: #94a3b8;";
+      if (isNA) textStyle += "color: #ef4444;"; // Red text for N/A
 
-</div>
+      div.innerHTML = `
+        <input type="checkbox" ${isChecked ? "checked" : ""} onclick="return false;">
+        <span class="item-text" style="${textStyle}">${text}</span>
+      `;
+      return div;
+    }
 
-<script>
+    // ==========================================
+    // 3. LOGIC: LIVE SYNC OR OFFLINE FALLBACK
+    // ==========================================
+    if (uid) {
+      // --- MODE 1: LIVE CLOUD SYNC ---
+      titleDiv.innerHTML = `Shared List <span class="live-badge">Live</span>`;
 
-/* GET DATA FROM QR */
+      // onSnapshot listens to database changes in REAL-TIME
+      db.collection("users").doc(uid).onSnapshot((doc) => {
+        listDiv.innerHTML = ""; // Clear list before redrawing
 
-let params = new URLSearchParams(location.search)
+        if (doc.exists) {
+          let items = doc.data().items || [];
+          
+          if (items.length === 0) {
+            listDiv.innerHTML = `<div class="loading-text">List is currently empty!</div>`;
+            return;
+          }
 
-let data = params.get("data")
+          // Sort so pending comes first, then done, then N/A
+          let pendingItems = items.filter(it => it.status === "pending");
+          let doneItems = items.filter(it => it.status === "done");
+          let naItems = items.filter(it => it.status === "na");
+          let sortedItems = [...pendingItems, ...doneItems, ...naItems];
 
-if(data){
+          sortedItems.forEach((it, index) => {
+            let itemText = `${index + 1}. ${it.name} ${it.q ? it.q : ""}`;
+            let isChecked = it.status === "done";
+            let isCrossed = it.status === "done";
+            let isNA = it.status === "na";
 
-let items = decodeURIComponent(data).split("\n")
+            let itemEl = createItemElement(itemText, isChecked, isCrossed, isNA);
+            listDiv.appendChild(itemEl);
+          });
+        } else {
+          listDiv.innerHTML = `<div class="loading-text">No list found for this user.</div>`;
+        }
+      }, (error) => {
+        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list.</div>`;
+        console.error("Error fetching live data:", error);
+      });
 
-items.forEach(it=>{
-
-if(it.trim()!=""){
-
-let div=document.createElement("div")
-
-div.className="item"
-
-div.innerHTML=
-`
-<input type="checkbox">
-<span>${it}</span>
-`
-
-document.getElementById("list").appendChild(div)
-
-}
-
-})
-
-}
-
-</script>
+    } else if (dataParam) {
+      // --- MODE 2: OFFLINE QR CODE (Old version support) ---
+      titleDiv.innerHTML = `Shared List`;
+      listDiv.innerHTML = ""; // Clear loading text
+      
+      let items = decodeURIComponent(dataParam).split("\n");
+      let count = 1;
+      items.forEach(it => {
+        if (it.trim() !== "") {
+          // Removes numbering if it already exists, to avoid double numbers
+          let cleanText = it.replace(/^\d+\.\s*/, ''); 
+          let itemEl = createItemElement(`${count}. ${cleanText}`, false, false, false);
+          listDiv.appendChild(itemEl);
+          count++;
+        }
+      });
+    } else {
+      // --- NO DATA AT ALL ---
+      listDiv.innerHTML = `<div class="loading-text">Please scan a valid Listo QR Code.</div>`;
+    }
+  </script>
 
 </body>
 </html>
