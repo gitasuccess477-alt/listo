@@ -11,139 +11,57 @@
 
   <style>
     body {
-      margin: 0;
-      font-family: system-ui;
+      margin: 0; font-family: system-ui;
       background: linear-gradient(-45deg, #f8fafc, #edf2f7, #e2e8f0, #e0f2fe);
-      background-size: 400% 400%;
-      animation: liveBg 8s ease-in-out infinite;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      box-sizing: border-box;
-      min-height: 100vh;
+      background-size: 400% 400%; animation: liveBg 8s ease-in-out infinite;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; box-sizing: border-box; min-height: 100vh;
     }
+    @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    @keyframes liveBg {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* LOGO FIX: Scaled perfectly without cutting */
-    .logo {
-      width: 100px;
-      height: auto;
-      object-fit: contain;
-      margin-top: 10px;
-      margin-bottom: 15px;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-    }
-
-    /* CONTAINER */
-    .container {
-      width: 100%;
-      max-width: 420px;
-      margin-bottom: 60px;
-    }
-
-    /* 3D CARD */
+    .logo { width: 100px; height: auto; object-fit: contain; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+    .container { width: 100%; max-width: 420px; margin-bottom: 60px; }
+    
     .card {
-      width: 100%;
-      background: white;
-      border-radius: 20px;
-      padding: 24px;
-      box-sizing: border-box;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      border: 1px solid #f1f5f9;
+      width: 100%; background: white; border-radius: 20px; padding: 20px;
+      box-sizing: border-box; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9;
     }
 
-    /* TITLE */
-    .title {
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #1e293b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
+    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .live-badge { background-color: #ef4444; color: white; font-size: 10px; padding: 3px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-    .live-badge {
-      background-color: #ef4444;
-      color: white;
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 12px;
-      animation: pulse 1.5s infinite;
-      text-transform: uppercase;
+    /* NEW ITEM STYLES MATCHING ANDROID APP */
+    .item-card {
+      background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+      display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0;
     }
+    .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
+    .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
+    .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .item-text { font-size: 16px; font-weight: bold; color: #334155; word-break: break-word; flex: 1; }
+    .item-status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; margin-left: 10px; }
+    
+    .item-card.done .item-text { color: #16a34a; }
+    .item-card.na .item-text { color: #dc2626; text-decoration: line-through;}
+    .item-card.done .item-status-text { color: #16a34a; }
+    .item-card.na .item-status-text { color: #dc2626; }
 
-    /* ITEMS */
-    .item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 10px;
-      font-size: 16px;
-      border-bottom: 1px solid #f1f5f9;
-      transition: background 0.3s;
-      border-radius: 8px;
+    .price-input {
+      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;
+      font-size: 14px; outline: none; background: white; box-sizing: border-box;
     }
+    .price-input:focus { border-color: #6366f1; }
 
-    .item:last-child {
-      border-bottom: none;
-    }
+    .action-buttons { display: flex; gap: 8px; margin-top: 5px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.95); }
+    .btn-avail { background: #22c55e; }
+    .btn-na { background: #ef4444; }
 
-    .item:hover {
-      background: #f8fafc;
-    }
-
-    /* CHECKBOX */
-    .item input {
-      width: 20px;
-      height: 20px;
-      margin-top: 2px;
-      cursor: pointer;
-      accent-color: #22c55e;
-    }
-
-    .item-text {
-      flex: 1;
-      word-break: break-word;
-      color: #334155;
-      font-weight: 500;
-    }
-
-    /* TAGLINE */
-    .tagline {
-      position: fixed;
-      bottom: 15px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-style: italic;
-      color: #16a34a;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 0 10px;
-      box-sizing: border-box;
-    }
-
-    .loading-text {
-      text-align: center;
-      color: #64748b;
-      font-style: italic;
-      padding: 20px 0;
-    }
+    .tagline { position: fixed; bottom: 15px; left: 0; width: 100%; text-align: center; font-style: italic; color: #16a34a; font-size: 13px; font-weight: 500; padding: 0 10px; box-sizing: border-box; }
+    .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; }
   </style>
 </head>
 
@@ -153,24 +71,14 @@
 
   <div class="container">
     <div class="card">
-      <div class="title" id="mainTitle">
-        Shared List
-      </div>
-      
-      <div id="list">
-        <div class="loading-text">Loading items...</div>
-      </div>
+      <div class="title" id="mainTitle">Shared List</div>
+      <div id="list"><div class="loading-text">Loading items...</div></div>
     </div>
-
-    <div class="tagline">
-      Listo apnaiye: List banegi digital, shopping hogi simple!
-    </div>
+    <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
 
   <script>
-    // ==========================================
-    // 1. FIREBASE CONFIGURATION 
-    // ==========================================
+    // 1. FIREBASE CONFIGURATION
     const firebaseConfig = {
       apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
       authDomain: "listo-356ba.firebaseapp.com",
@@ -180,84 +88,114 @@
       appId: "1:104729909475:web:fb3bd44800d371b7748dd6"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // ==========================================
-    // 2. PARSE URL PARAMETERS
-    // ==========================================
     let params = new URLSearchParams(location.search);
     let uid = params.get("uid");
     let dataParam = params.get("data");
     let listDiv = document.getElementById("list");
     let titleDiv = document.getElementById("mainTitle");
 
-    function createItemElement(text, isChecked, isCrossed, isNA) {
-      let div = document.createElement("div");
-      div.className = "item";
-      
-      let textStyle = "";
-      if (isCrossed) textStyle += "text-decoration: line-through; color: #94a3b8;";
-      if (isNA) textStyle += "color: #ef4444;";
+    // GLOBAL VARIABLES TO HOLD DATA FOR TWO-WAY SYNC
+    let globalItems = [];
+    let globalBudget = "0";
 
-      div.innerHTML = `
-        <input type="checkbox" ${isChecked ? "checked" : ""} onclick="return false;">
-        <span class="item-text" style="${textStyle}">${text}</span>
-      `;
-      return div;
+    // 2. WRITE DATA TO CLOUD
+    function updateItemPrice(index, priceValue) {
+      globalItems[index].price = priceValue;
+      saveToCloud();
     }
 
-    // ==========================================
-    // 3. LOGIC: LIVE SYNC OR OFFLINE FALLBACK
-    // ==========================================
+    function updateItemStatus(index, statusValue) {
+      globalItems[index].status = statusValue;
+      saveToCloud();
+    }
+
+    function saveToCloud() {
+      if(!uid) return;
+      db.collection("users").doc(uid).set({
+        items: globalItems,
+        budget: globalBudget
+      }, { merge: true }).catch(err => alert("Error saving: " + err.message));
+    }
+
+    // 3. RENDER UI FUNCTION
+    function renderList() {
+      listDiv.innerHTML = "";
+      
+      if (globalItems.length === 0) {
+        listDiv.innerHTML = `<div class="loading-text">List is currently empty!</div>`;
+        return;
+      }
+
+      let pendingItems = globalItems.filter(it => it.status === "pending");
+      let doneItems = globalItems.filter(it => it.status === "done");
+      let naItems = globalItems.filter(it => it.status === "na");
+      let sortedItems = [...pendingItems, ...doneItems, ...naItems];
+
+      sortedItems.forEach((it, displayIndex) => {
+        let realIndex = globalItems.indexOf(it);
+        let itemText = `${displayIndex + 1}. ${it.name} ${it.q ? it.q : ""}`;
+        
+        let cardClass = "item-card";
+        let statusText = "";
+        if (it.status === "done") { cardClass += " done"; statusText = "Available"; }
+        if (it.status === "na") { cardClass += " na"; statusText = "N/A"; }
+
+        let actionsHtml = "";
+        if (it.status === "pending") {
+          actionsHtml = `
+            <div class="action-buttons">
+              <button class="btn btn-avail" onclick="updateItemStatus(${realIndex}, 'done')">Available</button>
+              <button class="btn btn-na" onclick="updateItemStatus(${realIndex}, 'na')">N/A</button>
+            </div>
+          `;
+        }
+
+        let div = document.createElement("div");
+        div.className = cardClass;
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="item-text">${itemText}</span>
+            <span class="item-status-text">${statusText}</span>
+          </div>
+          <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" onchange="updateItemPrice(${realIndex}, this.value)">
+          ${actionsHtml}
+        `;
+        listDiv.appendChild(div);
+      });
+    }
+
+    // 4. LISTEN TO CLOUD IN REALTIME
     if (uid) {
       titleDiv.innerHTML = `Shared List <span class="live-badge">Live</span>`;
 
       db.collection("users").doc(uid).onSnapshot((doc) => {
-        listDiv.innerHTML = "";
-
         if (doc.exists) {
-          let items = doc.data().items || [];
-          
-          if (items.length === 0) {
-            listDiv.innerHTML = `<div class="loading-text">List is currently empty!</div>`;
-            return;
-          }
-
-          let pendingItems = items.filter(it => it.status === "pending");
-          let doneItems = items.filter(it => it.status === "done");
-          let naItems = items.filter(it => it.status === "na");
-          let sortedItems = [...pendingItems, ...doneItems, ...naItems];
-
-          sortedItems.forEach((it, index) => {
-            let itemText = `${index + 1}. ${it.name} ${it.q ? it.q : ""}`;
-            let isChecked = it.status === "done";
-            let isCrossed = it.status === "done";
-            let isNA = it.status === "na";
-
-            let itemEl = createItemElement(itemText, isChecked, isCrossed, isNA);
-            listDiv.appendChild(itemEl);
-          });
+          globalItems = doc.data().items || [];
+          globalBudget = doc.data().budget || "0";
+          renderList();
         } else {
           listDiv.innerHTML = `<div class="loading-text">No list found for this ID.</div>`;
         }
       }, (error) => {
-        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list. Make sure uid is correct.</div>`;
-        console.error("Error fetching live data:", error);
+        listDiv.innerHTML = `<div class="loading-text" style="color:red;">Error loading live list.</div>`;
       });
 
     } else if (dataParam) {
+      // OFFLINE FALLBACK (Read Only)
       titleDiv.innerHTML = `Shared List`;
       listDiv.innerHTML = ""; 
-      
       let items = decodeURIComponent(dataParam).split("\n");
       let count = 1;
       items.forEach(it => {
         if (it.trim() !== "") {
           let cleanText = it.replace(/^\d+\.\s*/, ''); 
-          let itemEl = createItemElement(`${count}. ${cleanText}`, false, false, false);
-          listDiv.appendChild(itemEl);
+          let div = document.createElement("div");
+          div.className = "item-card";
+          div.innerHTML = `<div class="item-header"><span class="item-text">${count}. ${cleanText}</span></div>`;
+          listDiv.appendChild(div);
           count++;
         }
       });
