@@ -20,7 +20,9 @@
     @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
     .logo { width: 100px; height: auto; object-fit: contain; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-    .container { width: 100%; max-width: 420px; margin-bottom: 60px; }
+    
+    /* FIX: Reduced bottom margin since tagline is no longer fixed */
+    .container { width: 100%; max-width: 420px; margin-bottom: 20px; }
     
     .card {
       width: 100%; background: white; border-radius: 20px; padding: 20px;
@@ -31,7 +33,7 @@
     .live-badge { background-color: #ef4444; color: white; font-size: 10px; padding: 3px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-    /* NEW ITEM STYLES MATCHING ANDROID APP */
+    /* ITEMS STYLES */
     .item-card {
       background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px;
       display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0;
@@ -60,7 +62,18 @@
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
-    .tagline { position: fixed; bottom: 15px; left: 0; width: 100%; text-align: center; font-style: italic; color: #16a34a; font-size: 13px; font-weight: 500; padding: 0 10px; box-sizing: border-box; }
+    /* FIX: Tagline is now properly placed below the card, not fixed to the screen */
+    .tagline { 
+      width: 100%; 
+      text-align: center; 
+      font-style: italic; 
+      color: #16a34a; 
+      font-size: 13px; 
+      font-weight: 500; 
+      padding: 25px 10px 10px 10px; 
+      box-sizing: border-box; 
+    }
+    
     .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; }
   </style>
 </head>
@@ -74,6 +87,7 @@
       <div class="title" id="mainTitle">Shared List</div>
       <div id="list"><div class="loading-text">Loading items...</div></div>
     </div>
+    
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
 
