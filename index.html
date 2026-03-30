@@ -16,20 +16,41 @@
       background-size: 400% 400%; animation: liveBg 8s ease-in-out infinite;
       display: flex; flex-direction: column; align-items: center;
       padding: 20px; box-sizing: border-box; min-height: 100vh;
+      transition: background 0.3s ease;
     }
     @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+    /* DARK MODE TOGGLE BUTTON */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .theme-toggle:active { transform: scale(0.9); }
+
     .logo { width: 100px; height: auto; object-fit: contain; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-    
-    /* FIX: Reduced bottom margin since tagline is no longer fixed */
     .container { width: 100%; max-width: 420px; margin-bottom: 20px; }
     
     .card {
       width: 100%; background: white; border-radius: 20px; padding: 20px;
       box-sizing: border-box; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9;
+      transition: all 0.3s ease;
     }
 
-    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 10px; }
+    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 10px; transition: color 0.3s; }
     .live-badge { background-color: #ef4444; color: white; font-size: 10px; padding: 3px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
@@ -37,13 +58,14 @@
     .item-card {
       background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px;
       display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
     }
     .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
     .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
     .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
-    .item-text { font-size: 16px; font-weight: bold; color: #334155; word-break: break-word; flex: 1; }
-    .item-status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; margin-left: 10px; }
+    .item-text { font-size: 16px; font-weight: bold; color: #334155; word-break: break-word; flex: 1; transition: color 0.3s; }
+    .item-status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; margin-left: 10px; transition: color 0.3s; }
     
     .item-card.done .item-text { color: #16a34a; }
     .item-card.na .item-text { color: #dc2626; text-decoration: line-through;}
@@ -53,6 +75,7 @@
     .price-input {
       width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;
       font-size: 14px; outline: none; background: white; box-sizing: border-box;
+      transition: all 0.3s ease;
     }
     .price-input:focus { border-color: #6366f1; }
 
@@ -62,40 +85,86 @@
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
-    /* FIX: Tagline properly placed below the card and forced into a single line */
     .tagline { 
-      width: 100%; 
-      text-align: center; 
-      font-style: italic; 
-      color: #16a34a; 
-      font-size: 12px; /* Thoda chota kiya taki ek line me fit aaye */
-      font-weight: 500; 
-      padding: 25px 10px 10px 10px; 
-      box-sizing: border-box; 
-      white-space: nowrap; /* Ye properties text ko ek hi line me rakhti hain */
-      overflow: hidden;
-      text-overflow: ellipsis;
+      width: 100%; text-align: center; font-style: italic; color: #16a34a; 
+      font-weight: 600; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(10px, 3.5vw, 13px); 
+      transition: all 0.3s ease;
     }
     
-    .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; }
+    .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; transition: color 0.3s; }
+
+    /* ==========================================
+       DARK MODE OVERRIDES
+       ========================================== */
+    body.dark-mode {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155);
+    }
+    body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
+    
+    body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
+    body.dark-mode .title { color: #f8fafc; }
+    body.dark-mode .loading-text { color: #94a3b8; }
+    
+    body.dark-mode .item-card { background: #0f172a; border-color: #334155; }
+    body.dark-mode .item-text { color: #f1f5f9; }
+    body.dark-mode .price-input { background: #1e293b; color: #f8fafc; border-color: #475569; }
+    
+    /* Dark Mode: Done & N/A Cards */
+    body.dark-mode .item-card.done { background: #064e3b; border-color: #047857; }
+    body.dark-mode .item-card.done .item-text, 
+    body.dark-mode .item-card.done .item-status-text { color: #6ee7b7; }
+    
+    body.dark-mode .item-card.na { background: #7f1d1d; border-color: #991b1b; }
+    body.dark-mode .item-card.na .item-text, 
+    body.dark-mode .item-card.na .item-status-text { color: #fca5a5; }
+
+    body.dark-mode .tagline { color: #4ade80; border-top-color: #475569; }
   </style>
 </head>
 
 <body>
+
+  <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
   <img src="https://image2url.com/r2/default/images/1774860458918-c6f7a05c-ca26-46e6-96fc-a7648f576bb0.png" class="logo" onerror="this.src='https://i.ibb.co/8nH5RSsc/Listo.png'; this.onerror=null;" alt="Listo Logo">
 
   <div class="container">
     <div class="card">
       <div class="title" id="mainTitle">Shared List</div>
+      
       <div id="list"><div class="loading-text">Loading items...</div></div>
+      
+      <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
     </div>
-    
-    <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
 
   <script>
-    // 1. FIREBASE CONFIGURATION
+    // ==========================================
+    // DARK MODE LOGIC
+    // ==========================================
+    const themeBtn = document.getElementById('themeToggle');
+    
+    // Check saved theme on load
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeBtn.innerText = '☀️';
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+        themeBtn.innerText = '☀️';
+      } else {
+        localStorage.setItem('theme', 'light');
+        themeBtn.innerText = '🌙';
+      }
+    }
+
+    // ==========================================
+    // FIREBASE CONFIGURATION
+    // ==========================================
     const firebaseConfig = {
       apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
       authDomain: "listo-356ba.firebaseapp.com",
@@ -114,11 +183,9 @@
     let listDiv = document.getElementById("list");
     let titleDiv = document.getElementById("mainTitle");
 
-    // GLOBAL VARIABLES TO HOLD DATA FOR TWO-WAY SYNC
     let globalItems = [];
     let globalBudget = "0";
 
-    // 2. WRITE DATA TO CLOUD
     function updateItemPrice(index, priceValue) {
       globalItems[index].price = priceValue;
       saveToCloud();
@@ -137,7 +204,6 @@
       }, { merge: true }).catch(err => alert("Error saving: " + err.message));
     }
 
-    // 3. RENDER UI FUNCTION
     function renderList() {
       listDiv.innerHTML = "";
       
@@ -184,7 +250,6 @@
       });
     }
 
-    // 4. LISTEN TO CLOUD IN REALTIME
     if (uid) {
       titleDiv.innerHTML = `Shared List <span class="live-badge">Live</span>`;
 
@@ -201,7 +266,6 @@
       });
 
     } else if (dataParam) {
-      // OFFLINE FALLBACK (Read Only)
       titleDiv.innerHTML = `Shared List`;
       listDiv.innerHTML = ""; 
       let items = decodeURIComponent(dataParam).split("\n");
