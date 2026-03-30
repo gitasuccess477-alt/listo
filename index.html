@@ -62,16 +62,19 @@
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
-    /* FIX: Tagline is now properly placed below the card, not fixed to the screen */
+    /* FIX: Tagline properly placed below the card and forced into a single line */
     .tagline { 
       width: 100%; 
       text-align: center; 
       font-style: italic; 
       color: #16a34a; 
-      font-size: 13px; 
+      font-size: 12px; /* Thoda chota kiya taki ek line me fit aaye */
       font-weight: 500; 
       padding: 25px 10px 10px 10px; 
       box-sizing: border-box; 
+      white-space: nowrap; /* Ye properties text ko ek hi line me rakhti hain */
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     
     .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; }
