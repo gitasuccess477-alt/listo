@@ -22,22 +22,10 @@
 
     /* DARK MODE TOGGLE BUTTON */
     .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: white;
-      border: 1px solid #cbd5e1;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
+      position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1;
+      border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; display: flex;
+      justify-content: center; align-items: center; z-index: 100;
     }
     .theme-toggle:active { transform: scale(0.9); }
 
@@ -54,12 +42,7 @@
     .live-badge { background-color: #ef4444; color: white; font-size: 10px; padding: 3px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-    /* ITEMS STYLES */
-    .item-card {
-      background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px;
-      display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0;
-      transition: all 0.3s ease;
-    }
+    .item-card { background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
     .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
     .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
@@ -67,16 +50,11 @@
     .item-text { font-size: 16px; font-weight: bold; color: #334155; word-break: break-word; flex: 1; transition: color 0.3s; }
     .item-status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; margin-left: 10px; transition: color 0.3s; }
     
-    .item-card.done .item-text { color: #16a34a; }
+    .item-card.done .item-text, .item-card.done .item-status-text { color: #16a34a; }
     .item-card.na .item-text { color: #dc2626; text-decoration: line-through;}
-    .item-card.done .item-status-text { color: #16a34a; }
     .item-card.na .item-status-text { color: #dc2626; }
 
-    .price-input {
-      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;
-      font-size: 14px; outline: none; background: white; box-sizing: border-box;
-      transition: all 0.3s ease;
-    }
+    .price-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; transition: all 0.3s ease; }
     .price-input:focus { border-color: #6366f1; }
 
     .action-buttons { display: flex; gap: 8px; margin-top: 5px; }
@@ -85,41 +63,32 @@
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
-    .tagline { 
-      width: 100%; text-align: center; font-style: italic; color: #16a34a; 
-      font-weight: 600; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #cbd5e1;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(10px, 3.5vw, 13px); 
-      transition: all 0.3s ease;
-    }
-    
     .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; transition: color 0.3s; }
 
-    /* ==========================================
-       DARK MODE OVERRIDES
-       ========================================== */
-    body.dark-mode {
-      background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155);
+    /* FIX: Tagline OUTSIDE the card, single line, auto-shrinks on small screens */
+    .tagline { 
+      width: 100%; text-align: center; font-style: italic; color: #16a34a; 
+      font-weight: 600; margin-top: 15px; 
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(10px, 3.5vw, 13px); 
+      transition: color 0.3s ease;
     }
+
+    /* DARK MODE OVERRIDES */
+    body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
     body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
-    
     body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
     body.dark-mode .title { color: #f8fafc; }
     body.dark-mode .loading-text { color: #94a3b8; }
-    
     body.dark-mode .item-card { background: #0f172a; border-color: #334155; }
     body.dark-mode .item-text { color: #f1f5f9; }
     body.dark-mode .price-input { background: #1e293b; color: #f8fafc; border-color: #475569; }
     
-    /* Dark Mode: Done & N/A Cards */
     body.dark-mode .item-card.done { background: #064e3b; border-color: #047857; }
-    body.dark-mode .item-card.done .item-text, 
-    body.dark-mode .item-card.done .item-status-text { color: #6ee7b7; }
-    
+    body.dark-mode .item-card.done .item-text, body.dark-mode .item-card.done .item-status-text { color: #6ee7b7; }
     body.dark-mode .item-card.na { background: #7f1d1d; border-color: #991b1b; }
-    body.dark-mode .item-card.na .item-text, 
-    body.dark-mode .item-card.na .item-status-text { color: #fca5a5; }
+    body.dark-mode .item-card.na .item-text, body.dark-mode .item-card.na .item-status-text { color: #fca5a5; }
 
-    body.dark-mode .tagline { color: #4ade80; border-top-color: #475569; }
+    body.dark-mode .tagline { color: #4ade80; }
   </style>
 </head>
 
@@ -132,20 +101,32 @@
   <div class="container">
     <div class="card">
       <div class="title" id="mainTitle">Shared List</div>
-      
       <div id="list"><div class="loading-text">Loading items...</div></div>
-      
-      <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
     </div>
+    
+    <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
 
   <script>
     // ==========================================
-    // DARK MODE LOGIC
+    // PARSE URL PARAMETERS
+    // ==========================================
+    let params = new URLSearchParams(location.search);
+    let uid = params.get("uid");
+    let dataParam = params.get("data");
+    let appTheme = params.get("theme"); // NEW: Catching theme from the App's QR Code!
+
+    // ==========================================
+    // AUTO-SYNC DARK MODE LOGIC
     // ==========================================
     const themeBtn = document.getElementById('themeToggle');
     
-    // Check saved theme on load
+    // Step 1: Override with App Theme if available from QR scan
+    if (appTheme === 'dark' || appTheme === 'light') {
+      localStorage.setItem('theme', appTheme);
+    }
+
+    // Step 2: Apply the theme
     if (localStorage.getItem('theme') === 'dark') {
       document.body.classList.add('dark-mode');
       themeBtn.innerText = '☀️';
@@ -177,9 +158,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let params = new URLSearchParams(location.search);
-    let uid = params.get("uid");
-    let dataParam = params.get("data");
     let listDiv = document.getElementById("list");
     let titleDiv = document.getElementById("mainTitle");
 
