@@ -52,15 +52,23 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; width: 100%; box-sizing: border-box;
 }
 
-/* FIX: Compact Line-by-Line Stats Box */
-.header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.stats-box { flex: 1.5; display: flex; flex-direction: column; gap: 4px; text-align: left; }
-.stat-row { display: flex; align-items: baseline; gap: 6px; }
-.title-box { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-.toggle-box { flex: 1; display: flex; justify-content: flex-end; }
+/* 🔥 FIX: New Header Layout - Absolute Center Title & Stacked Stats */
+.header-top { 
+  position: relative; display: flex; justify-content: space-between; align-items: flex-start; 
+  margin-bottom: 25px; min-height: 50px; 
+}
+.stats-box { display: flex; flex-direction: column; gap: 8px; }
+.stat-col { display: flex; flex-direction: column; align-items: center; width: fit-content; }
 
-.stat-lbl { margin: 0; font-size: 10px; color: #16a34a; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;}
-.stat-val { margin: 0; font-size: 14px; font-weight: 800; color: var(--text); transition: color 0.3s; }
+.title-box { 
+  position: absolute; left: 50%; transform: translateX(-50%); 
+  display: flex; flex-direction: column; align-items: center; top: 0; 
+}
+.toggle-box { display: flex; justify-content: flex-end; z-index: 10; }
+
+/* 🔥 FIX: User provided CSS implemented */
+.stat-lbl { margin: 0; font-size: 12px; color: #16a34a; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+.stat-val { margin: 0; font-size: 13px; font-weight: 800; color: var(--text); transition: color 0.3s; margin-top: 2px; }
 
 .title { margin: 0; font-size: 20px; font-weight: bold; color: var(--text); transition: color 0.3s; white-space: nowrap; }
 
@@ -129,12 +137,12 @@ body.dark .tagline { color: #4ade80; }
     <div class="header-top">
       
       <div class="stats-box">
-        <div class="stat-row">
-          <span class="stat-lbl">Total Items:</span>
+        <div class="stat-col">
+          <span class="stat-lbl">Total Items</span>
           <span id="itemCountDisplay" class="stat-val">0</span>
         </div>
-        <div class="stat-row">
-          <span class="stat-lbl">Total Bill:</span>
+        <div class="stat-col">
+          <span class="stat-lbl">Total Bill</span>
           <span id="totalDisplay" class="stat-val">₹0</span>
         </div>
       </div>
@@ -273,7 +281,7 @@ if(uid){
   });
 }
 
-// 🔥 Delete Item with Alert
+// 🔥 Delete Item
 window.deleteItem = function(i) {
   if (confirm("Are you sure you want to delete '" + globalItems[i].name + "'?\n\nPress OK to delete.")) {
       globalItems.splice(i, 1);
@@ -287,7 +295,6 @@ function renderUI(){
   listDiv.innerHTML = "";
   let total = 0;
   
-  // Update Item Count dynamically
   itemCountDiv.innerText = globalItems.length;
 
   if(globalItems.length === 0){
