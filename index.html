@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no">
-  <title>Listo - Live Shared List</title>
+  <title>Listo - Shared List</title>
 
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
@@ -20,21 +20,23 @@
     }
     @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    .theme-toggle { position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; }
+    .theme-toggle { position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 100; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
     .logo { width: 100px; height: auto; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
     .container { width: 100%; max-width: 420px; margin-bottom: 20px; }
     
     .card { width: 100%; background: white; border-radius: 24px; padding: 20px; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9; position: relative; }
 
-    /* Layout Fix: Balance left, Title Center */
-    .header-info { position: absolute; top: 20px; left: 20px; text-align: left; }
-    .balance-lbl { color: #16a34a; font-weight: bold; font-size: 11px; margin: 0; text-transform: uppercase; }
-    .total-amt { color: #1e293b; font-weight: 800; font-size: 15px; margin: 0; }
+    /* Balance Info Section */
+    .header-left { position: absolute; top: 22px; left: 20px; text-align: left; }
+    .balance-lbl { color: #16a34a; font-weight: bold; font-size: 10px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .total-amt { color: #1e293b; font-weight: 800; font-size: 16px; margin: 0; }
 
-    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; padding-top: 5px; }
-    .live-dot { height: 8px; width: 8px; background-color: #ef4444; border-radius: 50%; display: inline-block; margin-left: 5px; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; padding-top: 5px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    
+    /* Live Badge Fix */
+    .live-badge { background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 6px; text-transform: uppercase; animation: pulse 1.5s infinite; font-weight: 900; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
     .cat-name { text-align: center; font-size: 13px; font-weight: 600; color: #6366f1; background: #eef2ff; padding: 4px 15px; border-radius: 20px; width: fit-content; margin: 0 auto 20px; }
 
@@ -43,13 +45,14 @@
     .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
     .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .item-text { font-size: 16px; font-weight: bold; color: #334155; }
-    .status-txt { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #64748b; }
+    .item-text { font-size: 16px; font-weight: bold; color: #334155; flex: 1; }
+    .status-txt { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #16a34a; }
+    .item-card.na .status-txt { color: #dc2626; }
 
     .price-input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; margin-bottom: 10px; }
     
     .btn-group { display: flex; gap: 10px; }
-    .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: transform 0.1s; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; transition: transform 0.1s; }
     .btn:active { transform: scale(0.95); }
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
@@ -76,15 +79,15 @@
 
   <div class="container">
     <div class="card">
-      <div class="header-info">
+      <div class="header-left">
         <p class="balance-lbl">Balance</p>
         <p id="totalDisplay" class="total-amt">₹0</p>
       </div>
 
-      <div class="title">Shared List<span id="liveDot" class="live-dot" style="display:none;"></span></div>
+      <div class="title">Shared List <span id="liveBadge" class="live-badge" style="display:none;">Live</span></div>
       
       <div id="catDisplay" class="cat-name" style="display:none;"></div>
-      <div id="list"><div style="text-align:center; padding:20px; color:#64748b;">Loading list items...</div></div>
+      <div id="list"><div style="text-align:center; padding:30px; color:#64748b; font-style: italic;">Processing QR Data...</div></div>
     </div>
     
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
@@ -114,7 +117,7 @@
     const catDiv = document.getElementById("catDisplay");
     const totalDiv = document.getElementById("totalDisplay");
 
-    // Theme Sync Logic
+    // Theme Engine
     function applyTheme(theme) {
       if (theme === 'dark') {
         document.body.classList.add('dark-mode');
@@ -135,52 +138,63 @@
       document.getElementById('themeToggle').innerText = isDark ? '☀️' : '🌙';
     }
 
-    // Dual Sync & Data Loading
+    // Dual Sync & QR Data Processing
     if (uid) {
-      document.getElementById("liveDot").style.display = "inline-block";
+      document.getElementById("liveBadge").style.display = "inline-block";
       db.collection("users").doc(uid).onSnapshot((doc) => {
         if (doc.exists) {
-          const data = doc.data();
-          // Sabhi items ko handle karne ke liye (Root items + Named Categories)
-          globalItems = data.items || [];
+          globalItems = doc.data().items || [];
           renderList();
         }
       });
     } else if (dataParam) {
       try {
         const decoded = decodeURIComponent(dataParam);
-        let lines = decoded.split('\n');
+        let lines = decoded.split('\n').filter(l => l.trim() !== "");
         
-        if (lines[0].startsWith("LISTO")) {
-          catDiv.innerText = lines[0].replace("LISTO", "").replace(":", "").trim();
-          catDiv.style.display = 'block';
-          lines.shift();
+        // Category Header Detection
+        if (lines[0].includes("LISTO")) {
+          let catHeader = lines[0].split(':');
+          let name = catHeader[0].replace("LISTO", "").trim();
+          if(name) {
+            catDiv.innerText = name;
+            catDiv.style.display = 'block';
+          }
+          lines.shift(); // Remove category line from items
         }
 
-        globalItems = lines.filter(l => l.trim() !== "").map(l => ({
+        globalItems = lines.map(l => ({
           name: l.replace(/^\d+\.\s*/, ''),
           price: "",
           status: "pending"
         }));
         renderList();
       } catch (e) {
-        listDiv.innerHTML = "Error loading QR data.";
+        listDiv.innerHTML = "<div class='loading-text'>Invalid QR Data.</div>";
       }
     }
 
     function renderList() {
       listDiv.innerHTML = "";
-      let total = 0;
+      let totalSpent = 0;
+
+      if(globalItems.length === 0) {
+          listDiv.innerHTML = "<div style='text-align:center; padding:20px; color:#94a3b8;'>List is empty</div>";
+          totalDiv.innerText = "₹0";
+          return;
+      }
 
       globalItems.forEach((it, idx) => {
-        if (it.status === "done") total += parseFloat(it.price || 0);
+        if (it.status === "done") totalSpent += parseFloat(it.price || 0);
 
         let card = document.createElement("div");
         card.className = `item-card ${it.status}`;
+        let statusLabel = it.status === 'done' ? 'Available' : (it.status === 'na' ? 'N/A' : '');
+
         card.innerHTML = `
           <div class="item-header">
             <span class="item-text">${idx + 1}. ${it.name}</span>
-            <span class="status-txt">${it.status === 'pending' ? '' : it.status}</span>
+            <span class="status-txt">${statusLabel}</span>
           </div>
           <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" onchange="updateData(${idx}, 'price', this.value)">
           ${it.status === 'pending' ? `
@@ -192,17 +206,14 @@
         `;
         listDiv.appendChild(card);
       });
-      totalDiv.innerText = `₹${total}`;
+      totalDiv.innerText = `₹${totalSpent}`;
     }
 
     function updateData(idx, field, value) {
       globalItems[idx][field] = value;
       if (uid) {
         db.collection("users").doc(uid).update({ items: globalItems })
-          .catch(() => {
-            // Fallback if update fails
-            db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
-          });
+          .catch(() => db.collection("users").doc(uid).set({ items: globalItems }, { merge: true }));
       } else {
         renderList();
       }
