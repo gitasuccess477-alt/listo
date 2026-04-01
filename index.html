@@ -91,7 +91,7 @@
 
       <div class="title" id="mainTitle">Shared List</div>
       <div id="catName" class="cat-badge" style="display:none;"></div>
-      <div id="list"><div class="loading-text">Processing QR...</div></div>
+      <div id="list"><div class="loading-text">Loading items...</div></div>
     </div>
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
@@ -117,20 +117,14 @@
     let globalItems = [];
     const listDiv = document.getElementById("list");
     const totalDiv = document.getElementById("totalDisplay");
+    const catDisplay = document.getElementById("catName");
 
-    // Theme Logic
+    // ORIGINAL Theme Logic
     const themeBtn = document.getElementById('themeToggle');
-    function applyTheme(isDark) {
-        if(isDark) {
-            document.body.classList.add('dark-mode');
-            themeBtn.innerText = '☀️';
-        } else {
-            document.body.classList.remove('dark-mode');
-            themeBtn.innerText = '🌙';
-        }
+    if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeBtn.innerText = '☀️';
     }
-
-    if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') applyTheme(true);
 
     function toggleTheme() {
       const isDark = document.body.classList.toggle('dark-mode');
@@ -138,7 +132,7 @@
       themeBtn.innerText = isDark ? '☀️' : '🌙';
     }
 
-    // Data Load & Sync
+    // MAIN DATA LOGIC
     if (uid) {
       document.getElementById("mainTitle").innerHTML = `Shared List <span class="live-badge">Live</span>`;
       db.collection("users").doc(uid).onSnapshot((doc) => {
@@ -150,26 +144,37 @@
     } else if (dataParam) {
       try {
         const decoded = decodeURIComponent(dataParam);
-        // Robust split logic for QR data Boss
-        let lines = decoded.split(/[\r\n]+/).map(line => line.trim()).filter(line => line !== "");
-        
-        if (lines.length > 0 && lines[0].includes("LISTO")) {
-          const cat = lines[0].split(':')[0].replace("LISTO", "").trim();
-          if(cat) {
-              document.getElementById("catName").innerText = cat;
-              document.getElementById("catName").style.display = "block";
-          }
-          lines.shift();
-        }
+        // Step 1: Har line ko alag karo
+        let rawLines = decoded.split(/\r?\n/);
+        let itemsToRender = [];
 
-        globalItems = lines.map(l => ({
-          name: l.replace(/^\d+[\.\)]\s*/, ''), // Numbering hata dega string se
-          price: "",
-          status: "pending"
-        }));
+        rawLines.forEach(line => {
+            let trimmed = line.trim();
+            if(!trimmed) return;
+
+            // Step 2: Check if line is a Category Header (LISTO Category:)
+            if (trimmed.toUpperCase().startsWith("LISTO")) {
+                let catPart = trimmed.split(':')[0]; // "LISTO Groceries"
+                let catName = catPart.replace(/LISTO/i, "").trim();
+                if(catName) {
+                    catDisplay.innerText = catName;
+                    catDisplay.style.display = "block";
+                }
+            } else {
+                // Step 3: It's a normal item, clean numbering
+                let cleanName = trimmed.replace(/^\d+[\.\)]\s*/, '');
+                itemsToRender.push({
+                    name: cleanName,
+                    price: "",
+                    status: "pending"
+                });
+            }
+        });
+
+        globalItems = itemsToRender;
         renderUI();
       } catch (e) {
-        listDiv.innerHTML = "<div class='loading-text'>Invalid Data</div>";
+        listDiv.innerHTML = "<div class='loading-text'>Data Error</div>";
       }
     }
 
@@ -189,11 +194,11 @@
             <span class="item-text">${idx + 1}. ${it.name}</span>
             <span class="item-status-text">${statusTag}</span>
           </div>
-          <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" oninput="updateLocal(${idx}, this.value)">
+          <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" oninput="updatePrice(${idx}, this.value)">
           ${it.status === 'pending' ? `
             <div class="action-buttons">
-              <button class="btn btn-avail" onclick="updateStatus(${idx}, 'done')">Available</button>
-              <button class="btn btn-na" onclick="updateStatus(${idx}, 'na')">N/A</button>
+              <button class="btn btn-avail" onclick="updateStat(${idx}, 'done')">Available</button>
+              <button class="btn btn-na" onclick="updateStat(${idx}, 'na')">N/A</button>
             </div>
           ` : ''}
         `;
@@ -202,22 +207,19 @@
       totalDiv.innerText = `₹${totalSpent}`;
     }
 
-    // Real-time update logic
-    function updateLocal(idx, val) {
+    function updatePrice(idx, val) {
         globalItems[idx].price = val;
-        syncData();
+        sync();
     }
 
-    function updateStatus(idx, stat) {
+    function updateStat(idx, stat) {
         globalItems[idx].status = stat;
-        syncData();
+        sync();
     }
 
-    function syncData() {
+    function sync() {
         if (uid) {
-            db.collection("users").doc(uid).update({ items: globalItems }).catch(() => {
-                db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
-            });
+            db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
         } else {
             renderUI();
         }
