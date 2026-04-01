@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -8,29 +7,39 @@
   <title>Listo - Shared List</title>
 
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 
   <style>
-    /* 🔥 UI SAME — NO CHANGE */
     body {
       margin: 0; font-family: system-ui;
       background: linear-gradient(-45deg, #f8fafc, #edf2f7, #e2e8f0, #e0f2fe);
       background-size: 400% 400%; animation: liveBg 8s ease-in-out infinite;
       display: flex; flex-direction: column; align-items: center;
       padding: 20px; box-sizing: border-box; min-height: 100vh;
+      transition: background 0.3s ease;
     }
     @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    .logo { width: 100px; margin: 10px auto; }
+    /* DARK MODE TOGGLE BUTTON */
+    .theme-toggle {
+      position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1;
+      border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; z-index: 100;
+    }
+
+    .logo { width: 100px; margin: 10px auto; display: block; }
     .container { width: 100%; max-width: 420px; }
 
     .card {
       background: white; border-radius: 20px; padding: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1); position: relative; transition: all 0.3s ease;
     }
 
-    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+    .balance-header { margin-bottom: 10px; }
+    .balance-label { color: #16a34a; font-weight: bold; font-size: 13px; margin: 0; }
+    .balance-val { font-size: 20px; font-weight: 800; margin: 0; color: #1e293b; transition: color 0.3s; }
+
+    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #1e293b; transition: color 0.3s; }
 
     .cat-badge {
       text-align: center; font-size: 13px; font-weight: 600;
@@ -41,42 +50,67 @@
 
     .item-card {
       background: #f8fafc; border-radius: 12px; padding: 15px;
-      margin-bottom: 12px; border: 1px solid #e2e8f0;
+      margin-bottom: 12px; border: 1px solid #e2e8f0; transition: all 0.3s ease;
     }
+    .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
+    .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
-    .item-card.done { background: #dcfce7; }
-    .item-card.na { background: #fee2e2; }
+    .item-text { font-size: 16px; font-weight: bold; color: #334155; margin-bottom: 8px; display: block; transition: color 0.3s; }
 
     .price-input {
       width: 100%; padding: 10px; border-radius: 10px;
-      border: 1px solid #cbd5e1; margin-top: 8px;
+      border: 1px solid #cbd5e1; margin-top: 5px; box-sizing: border-box; outline: none;
+      background: white; transition: all 0.3s ease;
     }
 
-    .btn { padding: 10px; border: none; border-radius: 10px; color: white; cursor: pointer; }
+    .btn-row { display: flex; gap: 10px; margin-top: 12px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
-  </style>
 
+    .tagline { text-align: center; font-size: 12px; color: #64748b; margin-top: 20px; font-style: italic; transition: color 0.3s; }
+
+    /* 🔥 DARK MODE STYLES — PURANA STYLE */
+    body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
+    body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
+    body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
+    body.dark-mode .title, body.dark-mode .balance-val { color: #f8fafc; }
+    body.dark-mode .item-card { background: #0f172a; border-color: #334155; }
+    body.dark-mode .item-text { color: #f1f5f9; }
+    body.dark-mode .price-input { background: #1e293b; color: #f8fafc; border-color: #475569; }
+    body.dark-mode .cat-badge { background: #312e81; color: #a5b4fc; }
+    body.dark-mode .tagline { color: #4ade80; }
+  </style>
 </head>
 
 <body>
+
+<button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
 <img src="https://image2url.com/r2/default/images/1774860458918-c6f7a05c-ca26-46e6-96fc-a7648f576bb0.png" class="logo">
 
 <div class="container">
   <div class="card">
+    <div class="balance-header">
+      <p class="balance-label">Balance</p>
+      <h2 id="totalDisplay" class="balance-val">₹0</h2>
+    </div>
+
     <div class="title">Shared List</div>
     <div id="catName" class="cat-badge"></div>
-    <div id="list">Loading...</div>
-    <h2 id="totalDisplay">₹0</h2>
+    <div id="list" style="text-align: center; color: #94a3b8; padding: 20px;">Scanning list...</div>
   </div>
+  <p class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</p>
 </div>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyBbBsz8FgD6_5WKbCvfqtEkPLa9q_PIhuA",
   authDomain: "listo-356ba.firebaseapp.com",
-  projectId: "listo-356ba"
+  projectId: "listo-356ba",
+  storageBucket: "listo-356ba.firebasestorage.app",
+  messagingSenderId: "104729909475",
+  appId: "1:104729909475:web:fb3bd44800d371b7748dd6"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -85,105 +119,134 @@ const db = firebase.firestore();
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
 const dataParam = params.get("data");
+const appTheme = params.get("theme");
 
 let globalItems = [];
-let qrMode = false;
 let currentCategory = "";
+let isCloudLoaded = false;
 
 const listDiv = document.getElementById("list");
 const totalDiv = document.getElementById("totalDisplay");
 const catDiv = document.getElementById("catName");
+const themeBtn = document.getElementById('themeToggle');
 
-
-// ✅ QR LOAD FIX
-if (dataParam) {
-    const decoded = decodeURIComponent(dataParam);
-    let lines = decoded.split('\n').filter(l => l.trim());
-
-    let items = [];
-
-    lines.forEach(line => {
-        if (line.toUpperCase().includes("LISTO")) {
-            currentCategory = line.replace(/LISTO/i, "").replace(":", "").trim();
-            catDiv.innerText = currentCategory;
-            catDiv.style.display = "block";
-        } else {
-            items.push({ name: line.replace(/^\d+[\.\)]\s*/, ""), price:"", status:"pending" });
-        }
-    });
-
-    globalItems = items;
-    qrMode = true; // 🔒 LOCK
-    renderUI();
+// --- THEME SYNC LOGIC ---
+if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    themeBtn.innerText = '☀️';
 }
 
+function toggleTheme() {
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  themeBtn.innerText = isDark ? '☀️' : '🌙';
+}
 
-// ✅ FIREBASE SYNC FIX
+// 1. QR DATA PARSING
+if (dataParam) {
+    try {
+        const decoded = decodeURIComponent(dataParam);
+        let lines = decoded.split('\n').map(l => l.trim()).filter(l => l !== "");
+        let tempItems = [];
+
+        lines.forEach(line => {
+            if (line.toUpperCase().includes("LISTO")) {
+                currentCategory = line.replace(/LISTO/i, "").replace(":", "").trim();
+                catDiv.innerText = currentCategory;
+                catDiv.style.display = "block";
+            } else {
+                tempItems.push({
+                    name: line.replace(/^\d+[\.\)]\s*/, ""),
+                    price: "",
+                    status: "pending"
+                });
+            }
+        });
+
+        if (!isCloudLoaded) {
+            globalItems = tempItems;
+            renderUI();
+        }
+    } catch (e) {
+        listDiv.innerHTML = "QR Parsing Error";
+    }
+}
+
+// 2. LIVE SYNC (Firebase)
 if (uid) {
     db.collection("users").doc(uid).onSnapshot(doc => {
-        if (!doc.exists) return;
+        if (doc.exists) {
+            const data = doc.data();
+            let cloudItems = [];
 
-        const data = doc.data();
-        let cloudItems = [];
+            if (currentCategory && data.categories && data.categories[currentCategory]) {
+                cloudItems = data.categories[currentCategory].items || [];
+            } else {
+                cloudItems = data.items || [];
+            }
 
-        if (currentCategory && data.categories && data.categories[currentCategory]) {
-            cloudItems = data.categories[currentCategory].items || [];
-        } else {
-            cloudItems = data.items || [];
+            globalItems = cloudItems;
+            isCloudLoaded = true;
+            renderUI();
         }
-
-        if (qrMode && globalItems.length > 0) return; // 🔒 prevent overwrite
-
-        globalItems = cloudItems;
-        renderUI();
     });
 }
 
-
-// ✅ UI
-function renderUI(){
+function renderUI() {
     listDiv.innerHTML = "";
     let total = 0;
+    if (globalItems.length === 0) {
+        listDiv.innerHTML = "List is currently empty!";
+        totalDiv.innerText = "₹0";
+        return;
+    }
 
-    globalItems.forEach((it,i)=>{
-        if(it.status==="done") total += Number(it.price||0);
+    globalItems.forEach((it, i) => {
+        if (it.status === "done") total += Number(it.price || 0);
 
-        let div = document.createElement("div");
+        const div = document.createElement("div");
         div.className = "item-card " + it.status;
 
         div.innerHTML = `
-        <b>${i+1}. ${it.name}</b>
-        <input type="number" class="price-input" value="${it.price||''}"
-            oninput="updateItem(${i},'price',this.value)">
-        <br><br>
-        <button class="btn btn-avail" onclick="updateItem(${i},'status','done')">✔ Available</button>
-        <button class="btn btn-na" onclick="updateItem(${i},'status','na')">❌ N/A</button>
+            <span class="item-text">${i + 1}. ${it.name}</span>
+            <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}"
+                oninput="updateItem(${i}, 'price', this.value)">
+            <div class="btn-row">
+                <button class="btn btn-avail" onclick="updateItem(${i}, 'status', 'done')">✔ Available</button>
+                <button class="btn btn-na" onclick="updateItem(${i}, 'status', 'na')">❌ N/A</button>
+            </div>
         `;
-
         listDiv.appendChild(div);
     });
-
     totalDiv.innerText = "₹" + total;
 }
 
-
-// ✅ UPDATE + DUAL SYNC FIX
-function updateItem(i,field,val){
+function updateItem(i, field, val) {
     globalItems[i][field] = val;
-
-    if(uid){
-        let updateData = {};
-
-        if(currentCategory){
-            updateData[`categories.${currentCategory}.items`] = globalItems;
-        }else{
-            updateData["items"] = globalItems;
-        }
-
-        db.collection("users").doc(uid).set(updateData,{merge:true});
+    
+    if (field === 'status') renderUI(); 
+    else {
+        let total = 0;
+        globalItems.forEach(it => { if(it.status === "done") total += Number(it.price || 0); });
+        totalDiv.innerText = "₹" + total;
     }
 
-    renderUI();
+    if (uid) {
+        const ref = db.collection("users").doc(uid);
+        if (currentCategory) {
+            let updatePath = `categories.${currentCategory}.items`;
+            ref.update({ [updatePath]: globalItems }).catch(() => {
+                let obj = { categories: {} };
+                obj.categories[currentCategory] = { items: globalItems };
+                ref.set(obj, { merge: true });
+            });
+        } else {
+            ref.update({ items: globalItems }).catch(() => {
+                ref.set({ items: globalItems }, { merge: true });
+            });
+        }
+    }
 }
 </script>
 
