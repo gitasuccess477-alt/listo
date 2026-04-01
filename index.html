@@ -14,28 +14,32 @@
     background: linear-gradient(-45deg, #f8fafc, #edf2f7, #e2e8f0, #e0f2fe);
     background-size: 400% 400%; animation: liveBg 8s ease-in-out infinite;
     display: flex; flex-direction: column; align-items: center;
-    padding: 20px; box-sizing: border-box; min-height: 100vh;
+    padding: 15px; box-sizing: border-box; min-height: 100vh;
     transition: background 0.3s ease;
   }
   @keyframes liveBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
+  /* FIX: Toggle Button non-overlapping */
   .theme-toggle {
-    position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1;
-    border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
+    position: absolute; top: 15px; right: 15px; background: white; border: 1px solid #cbd5e1;
+    border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; z-index: 100; transition: 0.3s;
   }
 
-  .logo { width: 100px; height: auto; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+  .logo { width: 90px; height: auto; margin-top: 30px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
 
-  .container { max-width: 420px; width: 100%; margin-bottom: 20px; }
+  .container { max-width: 450px; width: 100%; margin-bottom: 20px; }
 
   .card {
     background: white; color: #1e293b; padding: 20px; border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; width: 100%; box-sizing: border-box;
   }
 
-  .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .balance-box { text-align: left; }
+  /* FIX: Shared List Centered, Balance Left */
+  .header-box {
+    position: relative; display: flex; justify-content: center; align-items: center; min-height: 45px; margin-bottom: 15px;
+  }
+  .balance-wrap { position: absolute; left: 0; top: 0; text-align: left; }
   .balance-lbl { margin: 0; font-size: 11px; color: #16a34a; font-weight: bold; text-transform: uppercase; }
   .balance-val { margin: 0; font-size: 18px; font-weight: 800; color: #1e293b; transition: color 0.3s; }
   .title { margin: 0; font-size: 22px; font-weight: bold; color: #1e293b; transition: color 0.3s; }
@@ -46,17 +50,25 @@
     margin: 0 auto 15px; display: none;
   }
 
+  /* FIX: Item Cards Wider */
   .item-card {
     background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 12px;
-    border: 1px solid #e2e8f0; box-sizing: border-box; width: 100%; transition: all 0.3s ease;
+    border: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; transition: all 0.3s ease;
   }
   .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
   .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
-  .item-text { font-size: 16px; font-weight: bold; margin-bottom: 8px; display: block; color: #334155; transition: color 0.3s; }
-  .status-label { font-size: 11px; font-weight: bold; text-transform: uppercase; margin-top: 8px; display: block; }
+  .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .item-text { font-size: 16px; font-weight: bold; color: #334155; transition: color 0.3s; flex: 1; padding-right: 10px; }
+  
+  .status-wrap { display: flex; align-items: center; gap: 12px; }
+  .status-label { font-size: 11px; font-weight: bold; text-transform: uppercase; }
   .status-label.done { color: #16a34a; }
   .status-label.na { color: #dc2626; }
+
+  /* FIX: Delete Icon */
+  .delete-icon { color: #94a3b8; font-size: 18px; cursor: pointer; transition: 0.2s; }
+  .delete-icon:active { transform: scale(0.8); }
 
   .price-input {
     width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1;
@@ -71,7 +83,7 @@
 
   .tagline { text-align: center; font-size: 13px; color: #16a34a; font-weight: 600; font-style: italic; margin-top: 15px; }
 
-  /* 🔥 PURANA DARK MODE WAPAS 🔥 */
+  /* DARK MODE */
   body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
   body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
   body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
@@ -86,14 +98,15 @@
 
 <body>
 
-<button id="themeToggle" class="toggle" onclick="toggleTheme()">🌙</button>
+<button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
 
 <img src="https://image2url.com/r2/default/images/1774860458918-c6f7a05c-ca26-46e6-96fc-a7648f576bb0.png" class="logo">
 
 <div class="container">
   <div class="card">
-    <div class="header-top">
-      <div class="balance-box">
+    
+    <div class="header-box">
+      <div class="balance-wrap">
         <p class="balance-lbl">Balance</p>
         <h3 id="totalDisplay" class="balance-val">₹0</h3>
       </div>
@@ -134,7 +147,7 @@ const totalDiv = document.getElementById("totalDisplay");
 const catDiv = document.getElementById("catName");
 const themeBtn = document.getElementById("themeToggle");
 
-// 🔥 Purana Theme System Wapas
+// 🔥 Theme System
 function toggleTheme(){
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
@@ -146,7 +159,13 @@ if(appTheme === "dark" || localStorage.getItem("theme") === "true") {
     themeBtn.innerText = "☀️";
 }
 
-// 🔥 QR Parse + Real Category Identification Fix
+// 🔥 CRITICAL FIX: Sort function (Pending -> Done -> N/A)
+function sortItems() {
+  const order = { "pending": 1, "done": 2, "na": 3 };
+  globalItems.sort((a, b) => order[a.status] - order[b.status]);
+}
+
+// 🔥 QR Parse
 if(data){
   try {
     const decoded = decodeURIComponent(data);
@@ -157,9 +176,8 @@ if(data){
         if (line.toUpperCase().includes("LISTO")) {
             let catRawName = line.replace(/LISTO/i, "").replace(/:$/, "").trim();
             
-            // 🔥 CRITICAL SYNC FIX: App ke Root Data ko Pehchano
             if(catRawName === "Show Item" || catRawName === "Full List"){
-                currentCategory = ""; // Firebase ke root "items" me sync hoga
+                currentCategory = catRawName === "Full List" ? "Full List" : ""; 
             } else {
                 currentCategory = catRawName;
             }
@@ -169,35 +187,42 @@ if(data){
                 catDiv.style.display = "block";
             }
         } else {
-            tempItems.push({
-                name: line.replace(/^\d+[\.\)]\s*/, ""),
-                price: "",
-                status: "pending"
-            });
+            tempItems.push({ name: line.replace(/^\d+[\.\)]\s*/, ""), price: "", status: "pending" });
         }
     });
     globalItems = tempItems;
+    sortItems();
     renderUI();
   } catch(e) {
     listDiv.innerHTML = "Error parsing QR";
   }
 }
 
-// 🔥 Firestore Dual Sync
+// 🔥 Firestore Dual Sync (With Full List Merge Fix)
 if(uid){
   db.collection("users").doc(uid).onSnapshot(doc => {
     if(doc.exists){
-      // Agar web par type kar rahe hain toh UI wapas disturb nahi hoga
       if (doc.metadata.hasPendingWrites) return;
 
       const dataObj = doc.data();
-      if (currentCategory && dataObj.categories && dataObj.categories[currentCategory]) {
-          // Category data
+      
+      // Fix for "All QR" disappearing
+      if(currentCategory === "Full List") {
+          let mergedItems = [...(dataObj.items || [])];
+          if(dataObj.categories) {
+              Object.values(dataObj.categories).forEach(cat => {
+                  if(cat.items) mergedItems = mergedItems.concat(cat.items);
+              });
+          }
+          globalItems = mergedItems;
+      } 
+      else if (currentCategory && dataObj.categories && dataObj.categories[currentCategory]) {
           globalItems = dataObj.categories[currentCategory].items || [];
       } else {
-          // Root data (Bina category wale items)
           globalItems = dataObj.items || [];
       }
+
+      sortItems();
       renderUI();
     }
   });
@@ -221,7 +246,13 @@ function renderUI(){
     div.className = "item-card " + it.status;
 
     div.innerHTML = `
-      <span class="item-text">${i+1}. ${it.name}</span>
+      <div class="item-header">
+        <span class="item-text">${i+1}. ${it.name}</span>
+        <div class="status-wrap">
+            ${it.status !== 'pending' ? `<span class="status-label ${it.status}">${it.status === 'done' ? '✔ Available' : '❌ N/A'}</span>` : ''}
+            <span class="delete-icon" onclick="deleteItem(${i})">🗑️</span>
+        </div>
+      </div>
       <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}"
         oninput="updatePrice(${i}, this.value)">
       
@@ -230,9 +261,7 @@ function renderUI(){
           <button class="btn btn-avail" onclick="updateStatus(${i}, 'done')">✔ Available</button>
           <button class="btn btn-na" onclick="updateStatus(${i}, 'na')">❌ N/A</button>
         </div>
-      ` : `
-        <span class="status-label ${it.status}">${it.status === 'done' ? '✔ Available' : '❌ N/A'}</span>
-      `}
+      ` : ''}
     `;
     listDiv.appendChild(div);
   });
@@ -240,8 +269,22 @@ function renderUI(){
   totalDiv.innerText = "₹" + total;
 }
 
-// 🔥 Update Price Without Resetting UI
+// 🔥 Delete Item with Alert
+function deleteItem(i) {
+  if (currentCategory === "Full List") {
+      alert("Cannot delete items directly from Full List view. Please delete from the specific category.");
+      return;
+  }
+  if (confirm("Are you sure you want to delete '" + globalItems[i].name + "'?")) {
+      globalItems.splice(i, 1);
+      renderUI();
+      scheduleSync();
+  }
+}
+
+// 🔥 Update Price
 function updatePrice(i, val){
+  if(currentCategory === "Full List") return; // Full List is Read-Only for Firebase Sync protection
   globalItems[i].price = val;
   let total = 0;
   globalItems.forEach(it => { if(it.status === "done") total += Number(it.price || 0); });
@@ -251,13 +294,20 @@ function updatePrice(i, val){
 
 // 🔥 Update Status
 function updateStatus(i, stat){
+  if(currentCategory === "Full List") {
+      alert("Live updates are disabled in Full List view to protect data. Please update from the specific category.");
+      return;
+  }
   globalItems[i].status = stat;
+  sortItems(); // Re-sort immediately
   renderUI();
   scheduleSync();
 }
 
-// 🔥 Cloud Sync Fire
+// 🔥 Cloud Sync
 function scheduleSync(){
+  if(currentCategory === "Full List") return; // Block writing from Full List view
+
   clearTimeout(syncTimeout);
   syncTimeout = setTimeout(() => {
     if(uid){
@@ -271,7 +321,6 @@ function scheduleSync(){
               ref.set(fallback, { merge: true });
           });
       } else {
-          // Root Sync
           ref.update({ items: globalItems }).catch(() => {
               ref.set({ items: globalItems }, { merge: true });
           });
