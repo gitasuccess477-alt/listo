@@ -52,14 +52,15 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.3s ease; width: 100%; box-sizing: border-box;
 }
 
-/* FIX: New Header Layout for Items & Bill side-by-side */
+/* FIX: Compact Line-by-Line Stats Box */
 .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.stats-box { flex: 1.5; display: flex; gap: 15px; text-align: left; }
+.stats-box { flex: 1.5; display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.stat-row { display: flex; align-items: baseline; gap: 6px; }
 .title-box { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .toggle-box { flex: 1; display: flex; justify-content: flex-end; }
 
 .stat-lbl { margin: 0; font-size: 10px; color: #16a34a; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;}
-.stat-val { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); transition: color 0.3s; }
+.stat-val { margin: 0; font-size: 14px; font-weight: 800; color: var(--text); transition: color 0.3s; }
 
 .title { margin: 0; font-size: 20px; font-weight: bold; color: var(--text); transition: color 0.3s; white-space: nowrap; }
 
@@ -87,7 +88,6 @@ body.dark .cat-badge { background: #312e81; color: #a5b4fc; }
 
 .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 
-/* FIX: Text color remains default standard color even in Available/NA states */
 .item-text { font-size: 16px; font-weight: bold; color: var(--text); transition: color 0.3s; flex: 1; text-align: left; padding-right: 10px; font-style: normal; }
 .qty-text { color: #6366f1; font-weight: 800; font-size: 14px; margin-left: 4px; }
 body.dark .qty-text { color: #a5b4fc; }
@@ -129,13 +129,13 @@ body.dark .tagline { color: #4ade80; }
     <div class="header-top">
       
       <div class="stats-box">
-        <div>
-          <p class="stat-lbl">Total Items</p>
-          <h3 id="itemCountDisplay" class="stat-val">0</h3>
+        <div class="stat-row">
+          <span class="stat-lbl">Total Items:</span>
+          <span id="itemCountDisplay" class="stat-val">0</span>
         </div>
-        <div>
-          <p class="stat-lbl">Total Bill</p>
-          <h3 id="totalDisplay" class="stat-val">₹0</h3>
+        <div class="stat-row">
+          <span class="stat-lbl">Total Bill:</span>
+          <span id="totalDisplay" class="stat-val">₹0</span>
         </div>
       </div>
       
@@ -183,7 +183,7 @@ let syncTimeout;
 
 const listDiv = document.getElementById("list");
 const totalDiv = document.getElementById("totalDisplay");
-const itemCountDiv = document.getElementById("itemCountDisplay"); // Total items element
+const itemCountDiv = document.getElementById("itemCountDisplay"); 
 const catDiv = document.getElementById("catName");
 const themeBtn = document.getElementById("themeToggle");
 
