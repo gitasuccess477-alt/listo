@@ -23,51 +23,50 @@
     .theme-toggle {
       position: absolute; top: 20px; right: 20px; background: white; border: 1px solid #cbd5e1;
       border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s ease; display: flex;
-      justify-content: center; align-items: center; z-index: 100;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; z-index: 100;
     }
 
-    .logo { width: 100px; height: auto; object-fit: contain; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+    .logo { width: 100px; height: auto; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
     .container { width: 100%; max-width: 420px; margin-bottom: 20px; }
     
     .card {
       width: 100%; background: white; border-radius: 20px; padding: 20px;
       box-sizing: border-box; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); border: 1px solid #f1f5f9;
-      transition: all 0.3s ease; position: relative;
+      position: relative; transition: all 0.3s ease;
     }
 
     .header-balance { position: absolute; top: 22px; left: 20px; text-align: left; }
     .bal-label { color: #16a34a; font-weight: bold; font-size: 10px; margin: 0; text-transform: uppercase; }
     .bal-amt { color: #1e293b; font-weight: 800; font-size: 16px; margin: 0; }
 
-    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 10px; }
-    .live-badge { background-color: #ef4444; color: white; font-size: 9px; padding: 2px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; font-weight: 900; }
+    .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 8px; }
+    .live-badge { background: #ef4444; color: white; font-size: 9px; padding: 2px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; font-weight: 900; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-    .cat-badge { text-align: center; font-size: 13px; font-weight: 600; color: #6366f1; background: #eef2ff; padding: 4px 15px; border-radius: 20px; width: fit-content; margin: 0 auto 15px; }
+    .cat-badge { text-align: center; font-size: 13px; font-weight: 600; color: #6366f1; background: #eef2ff; padding: 4px 15px; border-radius: 20px; width: fit-content; margin: 0 auto 15px; display: none; }
 
-    .item-card { background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+    .item-card { background: #f8fafc; border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 10px; }
     .item-card.done { background: #dcfce7; border-color: #bbf7d0; }
     .item-card.na { background: #fee2e2; border-color: #fecaca; }
 
     .item-header { display: flex; justify-content: space-between; align-items: center; }
     .item-text { font-size: 16px; font-weight: bold; color: #334155; flex: 1; }
-    .item-status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #16a34a; }
-    .item-card.na .item-status-text { color: #dc2626; }
+    .status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #16a34a; }
+    .item-card.na .status-text { color: #dc2626; }
 
-    .price-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; transition: all 0.3s ease; }
+    .price-input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; }
     
-    .action-buttons { display: flex; gap: 8px; margin-top: 5px; }
-    .btn { flex: 1; padding: 10px; border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: transform 0.1s; }
+    .action-buttons { display: flex; gap: 10px; margin-top: 5px; }
+    .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: transform 0.1s; }
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
-    .loading-text { text-align: center; color: #64748b; font-style: italic; padding: 20px 0; }
     .tagline { width: 100%; text-align: center; font-style: italic; color: #16a34a; font-weight: 600; margin-top: 15px; font-size: 13px; }
 
+    /* DARK MODE (Exactly as per your original request) */
     body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
     body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
-    body.dark-mode .card { background: #1e293b; border-color: #334155; }
+    body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
     body.dark-mode .title, body.dark-mode .bal-amt { color: #f8fafc; }
     body.dark-mode .item-card { background: #0f172a; border-color: #334155; }
     body.dark-mode .item-text { color: #f1f5f9; }
@@ -89,9 +88,9 @@
         <p id="totalDisplay" class="bal-amt">₹0</p>
       </div>
 
-      <div class="title" id="mainTitle">Shared List</div>
-      <div id="catName" class="cat-badge" style="display:none;"></div>
-      <div id="list"><div class="loading-text">Loading items...</div></div>
+      <div class="title">Shared List <span id="liveTag" class="live-badge" style="display:none;">Live</span></div>
+      <div id="catName" class="cat-badge"></div>
+      <div id="list"><div style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Scanning QR Data...</div></div>
     </div>
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
@@ -109,21 +108,20 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let params = new URLSearchParams(location.search);
-    let uid = params.get("uid");
-    let dataParam = params.get("data");
-    let appTheme = params.get("theme");
+    const params = new URLSearchParams(location.search);
+    const uid = params.get("uid");
+    const dataParam = params.get("data");
+    const appTheme = params.get("theme");
 
     let globalItems = [];
     const listDiv = document.getElementById("list");
     const totalDiv = document.getElementById("totalDisplay");
-    const catDisplay = document.getElementById("catName");
 
-    // ORIGINAL Theme Logic
+    // Theme Engine
     const themeBtn = document.getElementById('themeToggle');
     if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        themeBtn.innerText = '☀️';
+      document.body.classList.add('dark-mode');
+      themeBtn.innerText = '☀️';
     }
 
     function toggleTheme() {
@@ -132,9 +130,9 @@
       themeBtn.innerText = isDark ? '☀️' : '🌙';
     }
 
-    // MAIN DATA LOGIC
+    // Live Sync & Data Parsing
     if (uid) {
-      document.getElementById("mainTitle").innerHTML = `Shared List <span class="live-badge">Live</span>`;
+      document.getElementById("liveTag").style.display = "inline-block";
       db.collection("users").doc(uid).onSnapshot((doc) => {
         if (doc.exists) {
           globalItems = doc.data().items || [];
@@ -144,37 +142,24 @@
     } else if (dataParam) {
       try {
         const decoded = decodeURIComponent(dataParam);
-        // Step 1: Har line ko alag karo
-        let rawLines = decoded.split(/\r?\n/);
-        let itemsToRender = [];
+        // Step 1: Detect Category
+        const catMatch = decoded.match(/LISTO (.*?):/);
+        if (catMatch && catMatch[1]) {
+            document.getElementById("catName").innerText = catMatch[1].trim();
+            document.getElementById("catName").style.display = "block";
+        }
 
-        rawLines.forEach(line => {
-            let trimmed = line.trim();
-            if(!trimmed) return;
-
-            // Step 2: Check if line is a Category Header (LISTO Category:)
-            if (trimmed.toUpperCase().startsWith("LISTO")) {
-                let catPart = trimmed.split(':')[0]; // "LISTO Groceries"
-                let catName = catPart.replace(/LISTO/i, "").trim();
-                if(catName) {
-                    catDisplay.innerText = catName;
-                    catDisplay.style.display = "block";
-                }
-            } else {
-                // Step 3: It's a normal item, clean numbering
-                let cleanName = trimmed.replace(/^\d+[\.\)]\s*/, '');
-                itemsToRender.push({
-                    name: cleanName,
-                    price: "",
-                    status: "pending"
-                });
-            }
-        });
-
-        globalItems = itemsToRender;
+        // Step 2: Extract Items (Detect numbering like 1. Samaan)
+        const items = decoded.split(/\d+[\.\)]/).filter(s => s.trim() !== "" && !s.includes("LISTO"));
+        
+        globalItems = items.map(name => ({
+          name: name.trim().split('\n')[0], // Take only the first line of the item
+          price: "",
+          status: "pending"
+        }));
         renderUI();
       } catch (e) {
-        listDiv.innerHTML = "<div class='loading-text'>Data Error</div>";
+        listDiv.innerHTML = "Error parsing QR.";
       }
     }
 
@@ -185,44 +170,35 @@
       globalItems.forEach((it, idx) => {
         if (it.status === "done") totalSpent += parseFloat(it.price || 0);
 
-        let div = document.createElement("div");
-        div.className = `item-card ${it.status}`;
-        let statusTag = it.status === 'done' ? 'Available' : (it.status === 'na' ? 'N/A' : '');
+        const card = document.createElement("div");
+        card.className = `item-card ${it.status}`;
+        const statusTxt = it.status === 'done' ? 'Available' : (it.status === 'na' ? 'N/A' : '');
 
-        div.innerHTML = `
+        card.innerHTML = `
           <div class="item-header">
             <span class="item-text">${idx + 1}. ${it.name}</span>
-            <span class="item-status-text">${statusTag}</span>
+            <span class="status-text">${statusTxt}</span>
           </div>
-          <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" oninput="updatePrice(${idx}, this.value)">
+          <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" oninput="updateItem(${idx}, 'price', this.value)">
           ${it.status === 'pending' ? `
             <div class="action-buttons">
-              <button class="btn btn-avail" onclick="updateStat(${idx}, 'done')">Available</button>
-              <button class="btn btn-na" onclick="updateStat(${idx}, 'na')">N/A</button>
+              <button class="btn btn-avail" onclick="updateItem(${idx}, 'status', 'done')">Available</button>
+              <button class="btn btn-na" onclick="updateItem(${idx}, 'status', 'na')">N/A</button>
             </div>
           ` : ''}
         `;
-        listDiv.appendChild(div);
+        listDiv.appendChild(card);
       });
       totalDiv.innerText = `₹${totalSpent}`;
     }
 
-    function updatePrice(idx, val) {
-        globalItems[idx].price = val;
-        sync();
-    }
-
-    function updateStat(idx, stat) {
-        globalItems[idx].status = stat;
-        sync();
-    }
-
-    function sync() {
-        if (uid) {
-            db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
-        } else {
-            renderUI();
-        }
+    function updateItem(idx, field, val) {
+      globalItems[idx][field] = val;
+      if (uid) {
+        db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
+      } else {
+        renderUI();
+      }
     }
   </script>
 </body>
