@@ -17,7 +17,6 @@
   --inputBg: #ffffff; --inputBorder: #cbd5e1;
 }
 
-/* FIX: Both HTML and Body share the variables for deep color syncing */
 html.dark, body.dark {
   --bg1: #0f172a; --bg2: #1e293b; --bg3: #0f172a; --bg4: #334155;
   --card: #1e293b; --text: #f8fafc; --itemBg: #0f172a;
@@ -26,13 +25,11 @@ html.dark, body.dark {
   --inputBg: #1e293b; --inputBorder: #475569;
 }
 
-/* 🔥 THE ULTIMATE WHITE GAP KILLER 🔥 */
 html {
-  background-color: var(--bg1); /* Base layer color to hide overscroll */
+  background-color: var(--bg1); 
   transition: background-color 0.3s ease;
 }
 
-/* Fixed background layer that never moves or resizes */
 body::before {
   content: "";
   position: fixed;
@@ -93,11 +90,12 @@ body.dark .cat-badge { background: #312e81; color: #a5b4fc; }
 
 .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 
+/* FIX: Strike-through removed from NA items */
 .item-text { font-size: 16px; font-weight: bold; color: var(--text); transition: color 0.3s; flex: 1; text-align: left; padding-right: 10px; font-style: normal; }
 .qty-text { color: #6366f1; font-weight: 800; font-size: 14px; margin-left: 4px; }
 body.dark .qty-text { color: #a5b4fc; }
 .item-card.done .item-text { color: var(--doneText); }
-.item-card.na .item-text { color: var(--naText); text-decoration: line-through; opacity: 0.8; }
+.item-card.na .item-text { color: var(--naText); }
 
 .status-wrap { display: flex; align-items: center; gap: 12px; }
 .status-label { font-size: 11px; font-weight: bold; text-transform: uppercase; }
@@ -186,7 +184,6 @@ const totalDiv = document.getElementById("totalDisplay");
 const catDiv = document.getElementById("catName");
 const themeBtn = document.getElementById("themeToggle");
 
-// 🔥 Theme System Sync
 function toggleTheme(){
   document.documentElement.classList.toggle("dark");
   document.body.classList.toggle("dark");
@@ -300,13 +297,15 @@ function renderUI(){
     div.className = "item-card " + it.status;
 
     const trashIcon = `<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+
     let qtyHtml = it.q ? `<span class="qty-text">(${it.q})</span>` : "";
 
+    // FIX: Emojis removed from buttons and labels
     div.innerHTML = `
       <div class="item-header">
         <span class="item-text">${i+1}. ${it.name} ${qtyHtml}</span>
         <div class="status-wrap">
-            ${it.status !== 'pending' ? `<span class="status-label ${it.status}">${it.status === 'done' ? '✔ Available' : '❌ N/A'}</span>` : ''}
+            ${it.status !== 'pending' ? `<span class="status-label ${it.status}">${it.status === 'done' ? 'Available' : 'N/A'}</span>` : ''}
             <span class="delete-icon" onclick="deleteItem(${i})">${trashIcon}</span>
         </div>
       </div>
@@ -315,8 +314,8 @@ function renderUI(){
       
       ${it.status === "pending" ? `
         <div class="row">
-          <button class="btn btn-avail" onclick="updateStatus(${i}, 'done')">✔ Available</button>
-          <button class="btn btn-na" onclick="updateStatus(${i}, 'na')">❌ N/A</button>
+          <button class="btn btn-avail" onclick="updateStatus(${i}, 'done')">Available</button>
+          <button class="btn btn-na" onclick="updateStatus(${i}, 'na')">N/A</button>
         </div>
       ` : ''}
     `;
