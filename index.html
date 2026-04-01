@@ -26,7 +26,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; z-index: 100;
     }
 
-    .logo { width: 100px; height: auto; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+    .logo { width: 100px; height: auto; object-fit: contain; margin-top: 10px; margin-bottom: 15px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
     .container { width: 100%; max-width: 420px; margin-bottom: 20px; }
     
     .card {
@@ -40,7 +40,7 @@
     .bal-amt { color: #1e293b; font-weight: 800; font-size: 16px; margin: 0; }
 
     .title { text-align: center; font-size: 22px; font-weight: bold; margin-bottom: 20px; color: #1e293b; display: flex; justify-content: center; align-items: center; gap: 8px; }
-    .live-badge { background: #ef4444; color: white; font-size: 9px; padding: 2px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; font-weight: 900; }
+    .live-badge { background-color: #ef4444; color: white; font-size: 9px; padding: 2px 8px; border-radius: 12px; animation: pulse 1.5s infinite; text-transform: uppercase; font-weight: 900; }
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
     .cat-badge { text-align: center; font-size: 13px; font-weight: 600; color: #6366f1; background: #eef2ff; padding: 4px 15px; border-radius: 20px; width: fit-content; margin: 0 auto 15px; display: none; }
@@ -63,7 +63,7 @@
 
     .tagline { width: 100%; text-align: center; font-style: italic; color: #16a34a; font-weight: 600; margin-top: 15px; font-size: 13px; }
 
-    /* DARK MODE (Exactly as per your original request) */
+    /* DARK MODE (Original Style) */
     body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
     body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
     body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
@@ -90,7 +90,7 @@
 
       <div class="title">Shared List <span id="liveTag" class="live-badge" style="display:none;">Live</span></div>
       <div id="catName" class="cat-badge"></div>
-      <div id="list"><div style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Scanning QR Data...</div></div>
+      <div id="list"><div style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Processing...</div></div>
     </div>
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
@@ -116,13 +116,21 @@
     let globalItems = [];
     const listDiv = document.getElementById("list");
     const totalDiv = document.getElementById("totalDisplay");
+    const catDiv = document.getElementById("catName");
 
     // Theme Engine
     const themeBtn = document.getElementById('themeToggle');
-    if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') {
-      document.body.classList.add('dark-mode');
-      themeBtn.innerText = '☀️';
+    function applyTheme(isDark) {
+        if(isDark) {
+            document.body.classList.add('dark-mode');
+            themeBtn.innerText = '☀️';
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeBtn.innerText = '🌙';
+        }
     }
+
+    if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') applyTheme(true);
 
     function toggleTheme() {
       const isDark = document.body.classList.toggle('dark-mode');
@@ -130,7 +138,7 @@
       themeBtn.innerText = isDark ? '☀️' : '🌙';
     }
 
-    // Live Sync & Data Parsing
+    // MAIN LOGIC
     if (uid) {
       document.getElementById("liveTag").style.display = "inline-block";
       db.collection("users").doc(uid).onSnapshot((doc) => {
@@ -142,30 +150,44 @@
     } else if (dataParam) {
       try {
         const decoded = decodeURIComponent(dataParam);
-        // Step 1: Detect Category
-        const catMatch = decoded.match(/LISTO (.*?):/);
-        if (catMatch && catMatch[1]) {
-            document.getElementById("catName").innerText = catMatch[1].trim();
-            document.getElementById("catName").style.display = "block";
-        }
+        // Step 1: Split data by lines
+        let lines = decoded.split('\n').map(l => l.trim()).filter(l => l !== "");
+        let finalItems = [];
 
-        // Step 2: Extract Items (Detect numbering like 1. Samaan)
-        const items = decoded.split(/\d+[\.\)]/).filter(s => s.trim() !== "" && !s.includes("LISTO"));
-        
-        globalItems = items.map(name => ({
-          name: name.trim().split('\n')[0], // Take only the first line of the item
-          price: "",
-          status: "pending"
-        }));
+        lines.forEach(line => {
+            // Step 2: Check if it's a "LISTO Category:" header
+            if (line.toUpperCase().includes("LISTO")) {
+                let name = line.replace(/LISTO/i, "").replace(/:$/, "").trim();
+                if (name) {
+                    catDiv.innerText = name;
+                    catDiv.style.display = "block";
+                }
+            } else {
+                // Step 3: Parse normal item (remove numbering like "1. ")
+                let cleanItem = line.replace(/^\d+[\.\)]\s*/, "");
+                finalItems.push({
+                    name: cleanItem,
+                    price: "",
+                    status: "pending"
+                });
+            }
+        });
+
+        globalItems = finalItems;
         renderUI();
       } catch (e) {
-        listDiv.innerHTML = "Error parsing QR.";
+        listDiv.innerHTML = "QR Error.";
       }
     }
 
     function renderUI() {
       listDiv.innerHTML = "";
       let totalSpent = 0;
+
+      if (globalItems.length === 0) {
+          listDiv.innerHTML = "<div style='text-align:center; color:#94a3b8;'>List is empty</div>";
+          return;
+      }
 
       globalItems.forEach((it, idx) => {
         if (it.status === "done") totalSpent += parseFloat(it.price || 0);
