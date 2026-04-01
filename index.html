@@ -35,7 +35,6 @@
       position: relative; transition: all 0.3s ease;
     }
 
-    /* Header UI: Balance left, Title Center */
     .header-balance { position: absolute; top: 22px; left: 20px; text-align: left; }
     .bal-label { color: #16a34a; font-weight: bold; font-size: 10px; margin: 0; text-transform: uppercase; }
     .bal-amt { color: #1e293b; font-weight: 800; font-size: 16px; margin: 0; }
@@ -55,20 +54,18 @@
     .status-text { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #16a34a; }
     .item-card.na .status-text { color: #dc2626; }
 
-    .price-input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; transition: all 0.3s ease; }
+    .price-input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 14px; outline: none; background: white; box-sizing: border-box; }
     
-    .btn-group { display: flex; gap: 10px; margin-top: 5px; }
+    .action-buttons { display: flex; gap: 10px; margin-top: 5px; }
     .btn { flex: 1; padding: 10px; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 13px; cursor: pointer; transition: transform 0.1s; }
-    .btn:active { transform: scale(0.95); }
     .btn-avail { background: #22c55e; }
     .btn-na { background: #ef4444; }
 
     .tagline { width: 100%; text-align: center; font-style: italic; color: #16a34a; font-weight: 600; margin-top: 15px; font-size: 13px; }
 
-    /* DARK MODE */
     body.dark-mode { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); }
     body.dark-mode .theme-toggle { background: #334155; border-color: #475569; }
-    body.dark-mode .card { background: #1e293b; border-color: #334155; }
+    body.dark-mode .card { background: #1e293b; border-color: #334155; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
     body.dark-mode .title, body.dark-mode .bal-amt { color: #f8fafc; }
     body.dark-mode .item-card { background: #0f172a; border-color: #334155; }
     body.dark-mode .item-text { color: #f1f5f9; }
@@ -92,7 +89,7 @@
 
       <div class="title" id="mainTitle">Shared List</div>
       <div id="catName" class="cat-badge"></div>
-      <div id="list"><div style="text-align:center; padding:20px; color:#64748b; font-style:italic;">Processing...</div></div>
+      <div id="list">Loading...</div>
     </div>
     <div class="tagline">Listo apnaiye: List banegi digital, shopping hogi simple!</div>
   </div>
@@ -123,21 +120,20 @@ const totalDiv = document.getElementById("totalDisplay");
 const catDiv = document.getElementById("catName");
 const themeBtn = document.getElementById('themeToggle');
 
-// ================= THEME LOGIC =================
+// Theme Logic
 if (appTheme === 'dark' || localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
     themeBtn.innerText = '☀️';
 }
-
 themeBtn.onclick = () => {
     const isDark = document.body.classList.toggle('dark-mode');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     themeBtn.innerText = isDark ? '☀️' : '🌙';
 };
 
-// ================= DATA PROCESSING =================
+// ================= FIXED DATA LOGIC =================
 if (dataParam) {
-    isQRMode = true;
+    isQRMode = true; // Block Firebase overwrite
     try {
         const decoded = decodeURIComponent(dataParam);
         let lines = decoded.split('\n').map(l => l.trim()).filter(l => l !== "");
@@ -162,8 +158,8 @@ if (dataParam) {
     }
 }
 
-// ================= LIVE SYNC (FIREBASE) =================
-if (uid) {
+// LIVE SYNC: Only runs if NO QR data is present or for updates
+if (uid && !isQRMode) {
     document.getElementById("mainTitle").innerHTML = `Shared List <span class="live-badge">Live</span>`;
     db.collection("users").doc(uid).onSnapshot(doc => {
         if (doc.exists) {
@@ -173,23 +169,18 @@ if (uid) {
     });
 }
 
-// ================= UI RENDER =================
 function renderUI() {
     listDiv.innerHTML = "";
     let total = 0;
-
     if (globalItems.length === 0) {
         listDiv.innerHTML = "<div style='text-align:center; color:#94a3b8;'>List is empty</div>";
         return;
     }
-
     globalItems.forEach((it, i) => {
         if (it.status === "done") total += Number(it.price || 0);
-
         const div = document.createElement("div");
         div.className = "item-card " + it.status;
         const statusTxt = it.status === 'done' ? 'Available' : (it.status === 'na' ? 'N/A' : '');
-
         div.innerHTML = `
             <div class="item-header">
                 <span class="item-text">${i + 1}. ${it.name}</span>
@@ -198,7 +189,7 @@ function renderUI() {
             <input type="number" class="price-input" placeholder="Price ₹" value="${it.price || ''}" 
                 oninput="updateItem(${i}, 'price', this.value)">
             ${it.status === "pending" ? `
-                <div class="btn-group">
+                <div class="action-buttons">
                     <button class="btn btn-avail" onclick="updateItem(${i}, 'status', 'done')">✔ Available</button>
                     <button class="btn btn-na" onclick="updateItem(${i}, 'status', 'na')">❌ N/A</button>
                 </div>
@@ -209,11 +200,9 @@ function renderUI() {
     totalDiv.innerText = "₹" + total;
 }
 
-// ================= UPDATE LOGIC =================
 function updateItem(i, field, val) {
     globalItems[i][field] = val;
-    if (uid) {
-        // Dual Sync: Update Firebase, which will then trigger onSnapshot for all devices
+    if (uid && !isQRMode) {
         db.collection("users").doc(uid).set({ items: globalItems }, { merge: true });
     } else {
         renderUI();
